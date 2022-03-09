@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  db:
+    image: postgres:14
+    restart: always
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: portal_development
+    ports:
+      - '5432:5432'
+  portal:
+    image: portal
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: password
+
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 80:80
